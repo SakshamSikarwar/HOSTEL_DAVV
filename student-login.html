@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Student Login — Hostel-Mate</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Glass style (self-contained so you don't need to edit styles.css) */
+    :root{
+      --bg:#0f1724; --card-bg: rgba(255,255,255,0.06);
+      --accent: #6c8cff;
+    }
+    html,body{height:100%;margin:0;background:
+      radial-gradient(50% 50% at 10% 20%, rgba(108,140,255,0.08), transparent 10%),
+      radial-gradient(60% 50% at 90% 80%, rgba(0,210,255,0.03), transparent 12%),
+      var(--bg);
+      color:#e6eef8;font-family: Inter, Poppins, system-ui, Arial;}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px}
+    .glass{
+      width:380px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border-radius:14px;
+      padding:26px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      backdrop-filter: blur(8px) saturate(120%);
+    }
+    .logo{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+    .logo .dot{width:12px;height:12px;background:linear-gradient(90deg,var(--accent),#2fe8d6);border-radius:50%}
+    h2{margin:0 0 14px;font-weight:700}
+    .muted{color:rgba(230,238,248,0.6);font-size:0.9rem;margin-bottom:16px}
+    .form-control{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);color:inherit}
+    .form-control:focus{box-shadow:none;border-color:var(--accent)}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),#2fe8d6);border:0}
+    .small-link{font-size:0.9rem;color:rgba(230,238,248,0.7);text-decoration:none}
+    .notice{font-size:0.9rem;color:rgba(230,238,248,0.75);margin-top:12px}
+    pre#out{white-space:pre-wrap;color:#dffaf2;background:transparent;border:none;padding:0;margin-top:10px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="glass">
+      <div class="logo">
+        <div class="dot"></div>
+        <div>
+          <div style="font-weight:700">Hostel-Mate</div>
+          <div style="font-size:12px;color:rgba(230,238,248,0.6)">Student Login</div>
+        </div>
+      </div>
+
+      <h2>Welcome back</h2>
+      <div class="muted">Login with your student ID / email to continue</div>
+
+      <form id="studentForm">
+        <div class="mb-3">
+          <input id="email" class="form-control" type="text" placeholder="Email or Roll No" required>
+        </div>
+        <div class="mb-3">
+          <input id="password" class="form-control" type="password" placeholder="Password" required>
+        </div>
+        <div class="d-grid">
+          <button class="btn btn-primary btn-lg" type="submit">Login</button>
+        </div>
+      </form>
+
+      <div class="notice">Don't have an account? <a class="small-link" href="mailto:hello@hostelmate.com">Contact admin</a></div>
+
+      <pre id="out"></pre>
+    </div>
+  </div>
+
+  <script>
+    // Worker / backend URL (already created by you)
+    const API = "https://hostelproxy.sakshamsikarwar7024.workers.dev";
+
+    document.getElementById("studentForm").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      document.getElementById("out").textContent = "Please wait...";
+
+      try{
+        const res = await fetch(API + "/login-student", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({ email, password })
+        });
+        const json = await res.json().catch(()=> null);
+        document.getElementById("out").textContent = json ? JSON.stringify(json, null, 2) : await res.text();
+      }catch(err){
+        document.getElementById("out").textContent = "Request failed: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
