@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Login — Hostel-Mate</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root{--bg:#061226;--card:rgba(255,255,255,0.04);--accent:#6c8cff}
+    html,body{height:100%;margin:0;background:
+      linear-gradient(180deg,#071225 0%, #021626 100%);font-family:Poppins,system-ui,Arial;color:#e6eef8}
+    .center{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:32px}
+    .card-login{width:420px;padding:28px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));box-shadow:0 12px 30px rgba(2,6,23,0.7);border:1px solid rgba(255,255,255,0.04);backdrop-filter:blur(8px)}
+    h3{margin:0 0 10px}
+    .muted{color:rgba(230,238,248,0.7);margin-bottom:14px}
+    .form-control{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);color:inherit}
+    .btn-primary{background:linear-gradient(90deg,var(--accent),#2fe8d6);border:none}
+    .out{color:#bfffe8;margin-top:12px;white-space:pre-wrap}
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="card-login">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div>
+          <div style="font-weight:700">Hostel-Mate</div>
+          <div style="font-size:12px;color:rgba(230,238,248,0.6)">Admin Portal</div>
+        </div>
+      </div>
+
+      <h3>Admin Sign in</h3>
+      <div class="muted">Use admin credentials to access dashboard</div>
+
+      <form id="adminForm">
+        <div class="mb-3"><input id="username" class="form-control" type="text" placeholder="Username" required></div>
+        <div class="mb-3"><input id="pwd" class="form-control" type="password" placeholder="Password" required></div>
+        <div class="d-grid"><button class="btn btn-primary btn-lg" type="submit">Sign in</button></div>
+      </form>
+
+      <div class="out" id="out"></div>
+    </div>
+  </div>
+
+  <script>
+    const API = "https://hostelproxy.sakshamsikarwar7024.workers.dev";
+
+    document.getElementById("adminForm").addEventListener("submit", async (e)=>{
+      e.preventDefault();
+      const username = document.getElementById("username").value.trim();
+      const pwd = document.getElementById("pwd").value;
+
+      document.getElementById("out").textContent = "Logging in...";
+
+      try{
+        const res = await fetch(API + "/login-admin", {
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body: JSON.stringify({ username, pwd })
+        });
+        const data = await res.json().catch(()=> null);
+        document.getElementById("out").textContent = data ? JSON.stringify(data, null, 2) : await res.text();
+      }catch(err){
+        document.getElementById("out").textContent = "Error: " + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
